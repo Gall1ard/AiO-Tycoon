@@ -1,6 +1,6 @@
 import pygame
 import sys
-from objects import Buttons
+from objects import Buttons, InputBox
 
 # Initialize PyGame
 pygame.init()
@@ -29,6 +29,7 @@ colours = [
 
 initfont = pygame.font.SysFont('Courier New', 80)
 mainfont = pygame.font.SysFont('Courier New', 35, bold=True)
+smallmainfont = pygame.font.SysFont('Courier New', 20)
 
 
 # Set the frame rate
@@ -40,7 +41,8 @@ playBtn = Buttons(rect=(59, 260, 124, 50),
                   text="Play",
                   txtcol=(200, 200, 200),
                   txthov=(230, 230, 230),
-                  font=mainfont)
+                  font=mainfont,
+                  alpha=0)
 
 quitBtn = Buttons(rect=(59, 365, 124, 50),
                   color=colours[2],
@@ -48,9 +50,23 @@ quitBtn = Buttons(rect=(59, 365, 124, 50),
                   text="Quit",
                   txtcol=(200, 200, 200),
                   txthov=(230, 230, 230),
-                  font=mainfont)
+                  font=mainfont,
+                  alpha=0)
 
+backBtn = Buttons(rect=(20, 20, 100, 40),
+                  color=colours[2],
+                  hover_color=colours[2],
+                  text="Back",
+                  txtcol=(255, 255, 255),
+                  txthov=(230, 230, 230),
+                  font=mainfont,
+                  alpha=0)
 
+nameInput = InputBox(
+    rect=(340, 260, 400, 50),
+    font=smallmainfont,
+    text="имя (от 3-х до 20-и символов)"
+)
 
 
 # Main game loop
@@ -63,14 +79,18 @@ while True:
 
         playBtn.is_clicked(event=event)
         quitBtn.is_clicked(event=event)
+        backBtn.is_clicked(event=event)
+        nameInput.is_clicked(event=event)
 
         if event.type == pygame.USEREVENT and event.button == quitBtn:
-            print("!")
             pygame.quit()
             sys.exit()
         
         if event.type == pygame.USEREVENT and event.button == playBtn:
             GAME_SCENE = 1
+        
+        if event.type == pygame.USEREVENT and event.button == backBtn:
+            GAME_SCENE = 0
 
 
     #Scene management
@@ -103,6 +123,9 @@ while True:
         t1_font = mainfont.render("Введите псевдоним", True, (255, 255, 255))
         t1_rect = t1_font.get_rect(center=(screen_width//2, 170))
         screen.blit(t1_font, t1_rect)
+
+        nameInput.draw(screen)
+        backBtn.draw(screen)
 
         
 
