@@ -1,5 +1,5 @@
 import pygame
-
+import sys
 #Object classes
 
 mainfont = pygame.font.SysFont('Courier New', 35, bold=True)
