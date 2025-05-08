@@ -2,17 +2,16 @@ import pygame
 import sys
 #Object classes
 
-mainfont = pygame.font.SysFont('Courier New', 35, bold=True)
 
 class Buttons:
-    def __init__(self, rect, color, hover_color, text, txtcol, txthov) -> None:
+    def __init__(self, rect, color, hover_color, text, txtcol, txthov, font) -> None:
         self.rect = pygame.Rect(rect)
         self.color = color
         self.hover_color = hover_color
         self.text = text
         self.txtcol = txtcol
         self.txthov = txthov
-        self.font = mainfont
+        self.font = font
 
     def draw(self, screen) -> None:
         mouse_pos = pygame.mouse.get_pos()

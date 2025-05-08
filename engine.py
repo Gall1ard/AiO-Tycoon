@@ -25,6 +25,7 @@ colours = [
 ]
 
 initfont = pygame.font.SysFont('Courier New', 80)
+mainfont = pygame.font.SysFont('Courier New', 35, bold=True)
 
 
 # Set the frame rate
@@ -35,14 +36,16 @@ playBtn = Buttons(rect=(59, 260, 124, 50),
                   hover_color=colours[2],
                   text="Play",
                   txtcol=(200, 200, 200),
-                  txthov=(230, 230, 230))
+                  txthov=(230, 230, 230),
+                  font=mainfont)
 
 quitBtn = Buttons(rect=(59, 365, 124, 50),
                   color=colours[2],
                   hover_color=colours[2],
                   text="Quit",
                   txtcol=(200, 200, 200),
-                  txthov=(230, 230, 230))
+                  txthov=(230, 230, 230),
+                  font=mainfont)
 
 # Main game loop
 while True:
