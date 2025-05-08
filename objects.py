@@ -2,7 +2,6 @@ import pygame
 import sys
 #Object classes
 
-
 class Buttons:
     def __init__(self, rect, color, hover_color, text, txtcol, txthov, font) -> None:
         self.rect = pygame.Rect(rect)
@@ -35,4 +34,3 @@ class Buttons:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
                 pygame.event.post(pygame.event.Event(pygame.USEREVENT, button=self))
-    
