@@ -1,5 +1,6 @@
 import pygame
 import sys
+from enum import Enum
 #Object classes
 
 class Buttons:
@@ -27,7 +28,7 @@ class Buttons:
         #pygame.draw.rect(screen, current_color, self.rect)
         btn = pygame.Surface((self.rect[2], self.rect[3]))
         btn.set_alpha(self.alpha)
-        btn.fill((0, 0, 0))
+        btn.fill(current_color)
         screen.blit(btn, (self.rect[0], self.rect[1]))
 
         if self.text:
@@ -65,7 +66,8 @@ class InputBox:
             if self.active:
                 if event.key == pygame.K_RETURN:
                     if 3 <= len(self.text) <= 20:
-                        nameVar = self.text
+                        self.nameVar = self.text
+                        pygame.event.post(pygame.event.Event(pygame.USEREVENT, button=self))
                     else:
                         print("КАКОЙ ЖЕ ТЫ ДЕГЕНЕРАТ, СКАЗАНО ЖЕ, ЧТО ОТ 3-Х ДО 20-И")
                         
@@ -85,3 +87,85 @@ class InputBox:
     def draw(self, screen):
         pygame.draw.rect(screen, (230, 230, 230), self.rect, 1)
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+(self.rect.h//4)))
+
+
+class JobTitle:
+    
+    def __init__(self, minimum_wage, title):
+        self.minimum_wage: int = minimum_wage
+        self.title: str = title
+
+
+class Employee(JobTitle):
+
+    def __init__(self, minimum_wage, title, sex, name, age):
+        super().__init__(minimum_wage, title)
+        self.sex: str = sex
+        self.name: str = name
+        self.age: int = age
+        self.salary: int = self.salary_calc()
+    
+    def salary_calc(self) -> int:
+
+        if self.sex == "F": 
+            self.salary = self.minimum_wage
+        
+        else:
+            self.salary = int(self.minimum_wage * (1 + abs(100 - self.age)))
+
+
+class Quality(Enum):
+    WORST = 1
+    BAD = 2
+    MID = 3
+    GOOD = 4
+    BEST = 5
+
+class Devices:
+
+    def __init__(self, model, quality, income):
+        self.model: str = model
+        self.quality: Quality = quality
+        self.income: int = income
+    
+    def count_influence(self) -> float:
+        return self.income / (self.income * (6 - self.quality))
+
+class Monitor(Devices):
+
+    def __init__(self, model, quality, income, resolution, ratio):
+        super().__init__(model, quality, income)
+        self.resolution: str = resolution
+        self.ratio: str = ratio
+
+class Mouse(Devices):
+
+    def __init__(self, model, quality, income, dpi):
+        super().__init__(model, quality, income)
+        self.dpi: int = dpi
+
+class MousePad(Devices): #Extinction danger
+
+    def __init__(self, model, quality, income, softness):
+        super().__init__(model, quality, income)
+        self.softness: str = softness
+
+class WebCamera(Devices):
+    
+    def __init__(self, model, quality, income, resolution, hasMic):
+        super().__init__(model, quality, income)
+        self.resolution: str = resolution
+        self.hasMic: bool = hasMic
+
+class Keyboard(Devices):
+
+    def __init__(self, model, quality, income, size):
+        super().__init__(model, quality, income)
+        self.size: str = size
+
+
+
+    
+    
+
+
