@@ -13,6 +13,11 @@ items = {
                    pr.Quality.WORST,
                    900,
                    "1280x900",
+                   "14''"),
+        pr.Monitor("Asui S-10023",
+                   pr.Quality.WORST,
+                   900,
+                   "1280x900",
                    "14''")
     ],
     "webcameras": [

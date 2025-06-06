@@ -137,12 +137,29 @@ class Monitor(Devices):
         super().__init__(model, quality, income)
         self.resolution: str = resolution
         self.ratio: str = ratio
+    
+    def info(self):
+        return {
+            'model': self.model,
+            'quality': self.quality,
+            'income': self.income,
+            'resolution': self.resolution,
+            'ratio': self.ratio
+        }
 
 class Mouse(Devices):
 
     def __init__(self, model, quality, income, dpi):
         super().__init__(model, quality, income)
         self.dpi: int = dpi
+    
+    def info(self):
+        return {
+            'model': self.model,
+            'quality': self.quality,
+            'income': self.income,
+            'dpi': self.dpi
+        }
 
 class MousePad(Devices): #Extinction danger
 
@@ -150,18 +167,43 @@ class MousePad(Devices): #Extinction danger
         super().__init__(model, quality, income)
         self.softness: str = softness
 
+    def info(self):
+        return {
+            'model': self.model,
+            'quality': self.quality,
+            'income': self.income,
+            'softness': self.softness
+        }
+
 class WebCamera(Devices):
     
     def __init__(self, model, quality, income, resolution, hasMic):
         super().__init__(model, quality, income)
         self.resolution: str = resolution
         self.hasMic: bool = hasMic
+    
+    def info(self):
+        return {
+            'model': self.model,
+            'quality': self.quality,
+            'income': self.income,
+            'resolution': self.resolution,
+            'hasMic': self.hasMic
+        }
 
 class Keyboard(Devices):
 
     def __init__(self, model, quality, income, size):
         super().__init__(model, quality, income)
         self.size: str = size
+    
+    def info(self):
+        return {
+            'model': self.model,
+            'quality': self.quality,
+            'income': self.income,
+            'size': self.size
+        }
 
 
 
