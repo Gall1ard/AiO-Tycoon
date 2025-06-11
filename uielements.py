@@ -71,6 +71,15 @@ swipeRightBtn = Buttons(rect=(1040, 30, 30, 30), #TODO: redo
                        font=smallmainfont,
                        alpha=255)
 
+createBtn = Buttons(rect=(20, 360, 130, 30), #TODO: redo 
+                       color=colours[3],
+                       hover_color=colours[2],
+                       text="Create +",
+                       txtcol=(255, 255, 255),
+                       txthov=(230, 230, 230),
+                       font=smallmainfont,
+                       alpha=255)
+
 nameInput = InputBox(
     rect=(340, 260, 400, 50),
     font=smallmainfont,
@@ -82,3 +91,7 @@ companyNameInput = InputBox(
     font=smallmainfont,
     text="Название фирмы"
 )
+
+def form_buttons(rects = []) -> list:
+    return [Buttons(rect=rct_) for rct_ in rects]
+

@@ -15,7 +15,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_icon(gameicon)
 pygame.display.set_caption("AiO-Tycoon")
 
-GAME_SCENE = 2 #Start scene is 0. If it's not then it's for testing purposes
+GAME_SCENE = 3 #Start scene is 0. If it's not then it's for testing purposes
 '''
 0 - Main menu screen
 1 - Login/Register screen (pops up if the player wasn't logged in)
@@ -23,12 +23,15 @@ GAME_SCENE = 2 #Start scene is 0. If it's not then it's for testing purposes
 3 - Device constructor scene
 '''
 
-#EDITOR_TOGGLE = False
+EDITOR = False
 CNAME_TOGGLE = False
 
 player_name = ""
 
 tab_ind = 0
+currBtns = []
+
+tabnames = ["monitors", "mice", "mousepads", "keyboards", "webcameras"]
 
 startBg = pygame.image.load("sources/Bgs/startbg.png")
 blurBg = pygame.image.load("sources/Bgs/blurred.png")
@@ -40,6 +43,8 @@ mouseDummy = pygame.image.load("sources/Sprites/mousedummy.png")
 wcamDummy = pygame.image.load("sources/Sprites/webcameradummy.png")
 mousepadDummy = pygame.image.load("sources/Sprites/mousepaddummy.png")
 keyboardDummy = pygame.image.load("sources/Sprites/keyboarddummy.png")
+
+dummies = [monitorDummy, mouseDummy, mousepadDummy, keyboardDummy, wcamDummy]
 
 colours = [
     (192, 182, 166), #main menu bg
@@ -68,42 +73,73 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
-        ui_.playBtn.is_clicked(event=event)
-        ui_.quitBtn.is_clicked(event=event)
+        
+        
         ui_.backBtn.is_clicked(event=event)
-        ui_.nameInput.is_clicked(event=event)
-        ui_.companyNameInput.is_clicked(event=event)
-        ui_.editorBtn.is_clicked(event=event)
-        ui_.swipeLeftBtn.is_clicked(event=event)
-        ui_.swipeRightBtn.is_clicked(event=event)
 
-        if event.type == pygame.USEREVENT and event.button == ui_.quitBtn:
-            pygame.quit()
-            sys.exit()
-        
-        if event.type == pygame.USEREVENT and event.button == ui_.playBtn:
-            GAME_SCENE = 1
-        
         if event.type == pygame.USEREVENT and event.button == ui_.backBtn:
             GAME_SCENE -= 1
-
-        if event.type == pygame.USEREVENT and event.button == ui_.nameInput:
-            player_name = ui_.nameInput.nameVar
-            GAME_SCENE = 2
         
-        if event.type == pygame.USEREVENT and event.button == ui_.nameInput:
-            CNAME_TOGGLE = True
+        
+        if GAME_SCENE == 0:
+            ui_.playBtn.is_clicked(event=event)
+            ui_.quitBtn.is_clicked(event=event)
 
-        if event.type == pygame.USEREVENT and event.button == ui_.editorBtn:
-            GAME_SCENE = 3
-            pass
+            if event.type == pygame.USEREVENT and event.button == ui_.quitBtn:
+                pygame.quit()
+                sys.exit()
             
-        if event.type == pygame.USEREVENT and event.button == ui_.swipeLeftBtn and tab_ind >= 1:
-            tab_ind -= 1
+            if event.type == pygame.USEREVENT and event.button == ui_.playBtn:
+                GAME_SCENE = 1
         
-        if event.type == pygame.USEREVENT and event.button == ui_.swipeRightBtn and tab_ind <= 3:
-            tab_ind += 1
+        if GAME_SCENE == 1:
+            ui_.nameInput.is_clicked(event=event)
+
+            if event.type == pygame.USEREVENT and event.button == ui_.nameInput:
+                player_name = ui_.nameInput.nameVar
+                GAME_SCENE = 2
+
+        if GAME_SCENE == 2:
+            ui_.companyNameInput.is_clicked(event=event)
+            ui_.editorBtn.is_clicked(event=event)
+
+            if event.type == pygame.USEREVENT and event.button == ui_.companyNameInput:
+                CNAME_TOGGLE = True
+
+            if event.type == pygame.USEREVENT and event.button == ui_.editorBtn:
+                GAME_SCENE = 3
+                pass
+        
+        if GAME_SCENE == 3:
+            ui_.swipeLeftBtn.is_clicked(event=event)
+            ui_.swipeRightBtn.is_clicked(event=event)
+            ui_.createBtn.is_clicked(event=event)
+
+            if event.type == pygame.USEREVENT and event.button == ui_.swipeLeftBtn and tab_ind >= 1 and GAME_SCENE == 3:
+                tab_ind -= 1
+                currBtns = unfold(items[tabnames[tab_ind]], dummies[tab_ind], 0)
+                btns = ui_.form_buttons(currBtns)
+            
+            if event.type == pygame.USEREVENT and event.button == ui_.swipeRightBtn and tab_ind <= 3 and GAME_SCENE == 3:
+                tab_ind += 1
+                currBtns = unfold(items[tabnames[tab_ind]], dummies[tab_ind], 0)
+                btns = ui_.form_buttons(currBtns)
+            
+            if event.type == pygame.USEREVENT and event.button == ui_.createBtn and EDITOR == False:
+                EDITOR = True
+                currBtns = unfold(items["monitors"], monitorDummy, 0)
+                btns = ui_.form_buttons(currBtns)
+
+            if EDITOR == True:
+                for i in btns: i.is_clicked(event=event)
+                
+                if event.type == pygame.USEREVENT:
+
+                    for i in range(len(btns)):
+                        if event.button == btns[i]:
+                            print(items[tabnames[tab_ind]][i].info()) #TODO: Change print to real actions
+
+            
 
 
     #Scene management
@@ -193,46 +229,50 @@ while True:
         tint.set_alpha(184)
         tint.fill((0, 0, 0))
         screen.blit(tint, (730, 0))
-
-        ui_.swipeLeftBtn.draw(screen)
-        ui_.swipeRightBtn.draw(screen)
         ui_.backBtn.draw(screen)
+        ui_.createBtn.draw(screen)
 
-        tab = pygame.Surface((270, 30))
-        tab.fill(ui_.colours[3])
-        screen.blit(tab, (770, 30))
+        if EDITOR == True:
 
+            ui_.swipeLeftBtn.draw(screen)
+            ui_.swipeRightBtn.draw(screen)
+            
+            tab = pygame.Surface((270, 30))
+            tab.fill(ui_.colours[3])
+            screen.blit(tab, (770, 30))
 
-        temp = ""
+            temp = ""
 
-        match tab_ind:
-            case 0:
-                temp = "Монитор"
-                unfold(items["monitors"], monitorDummy)
-                pass
-            case 1:
-                temp = "Мышь"
-                unfold(items["mice"], mouseDummy)
-                pass
-            case 2:
-                temp = "Коврик"
-                unfold(items["mousepads"], mousepadDummy)
-                pass
-            case 3:
-                temp = "Клавиатура"
-                unfold(items["keyboards"], keyboardDummy)
-                pass
-            case 4:
-                temp = "Веб-камера"
-                unfold(items["webcameras"], wcamDummy)
-                pass
-        
-        tab_text = smallmainfont.render(temp, True, (255, 244, 244))
-        tab_rect = tab_text.get_rect(center=(905, 45))
-        screen.blit(tab_text, tab_rect)
+            match tab_ind:
+                case 0:
+                    temp = "Монитор"
+                    unfold(items["monitors"], monitorDummy, 1)
+                    pass
+                case 1:
+                    temp = "Мышь"
+                    unfold(items["mice"], mouseDummy, 1)
+                    pass
+                case 2:
+                    temp = "Коврик"
+                    unfold(items["mousepads"], mousepadDummy, 1)
+                    pass
+                case 3:
+                    temp = "Клавиатура"
+                    unfold(items["keyboards"], keyboardDummy, 1)
+                    pass
+                case 4:
+                    temp = "Веб-камера"
+                    unfold(items["webcameras"], wcamDummy, 1)
+                    pass
+            
+            for i in btns: i.draw(screen)
+            
+            tab_text = smallmainfont.render(temp, True, (255, 244, 244))
+            tab_rect = tab_text.get_rect(center=(905, 45))
+            screen.blit(tab_text, tab_rect)
 
     
-    def unfold(item, sprite):
+    def unfold(item, sprite, mode):
         initX = 760
         initY = 60
 
@@ -240,27 +280,35 @@ while True:
         shiftX = 170
         shiftY = 150
 
+        tRects = []
+
         if item != []:
-            screen.blit(sprite, (initX, initY)) 
+            if mode: screen.blit(sprite, (initX, initY)) 
             temp_ = smallmainfont.render(item[0].info()["model"], True, (255, 244, 244))
             tempR = temp_.get_rect(topleft=(initX-10, initY+120))
-            screen.blit(temp_, tempR)
-        
+            tRects.append(tempR)
+
+            if mode:
+                screen.blit(temp_, tempR)
+            
             for i in item[1:]:
                 if not toggle:
                     initX += shiftX
-                    screen.blit(sprite, (initX, initY))
+                    if mode: screen.blit(sprite, (initX, initY))
                     toggle = True
                 else:
                     initX -= shiftX
                     initY += shiftY
-                    screen.blit(sprite, (initX, initY))
+                    if mode: screen.blit(sprite, (initX, initY))
                     toggle = False
-                
+                    
                 temp_ = smallmainfont.render(i.info()["model"], True, (255, 244, 244))
                 tempR = temp_.get_rect(topleft=(initX-10, initY+120))
-                screen.blit(temp_, tempR)
+                if mode: screen.blit(temp_, tempR)
 
+                tRects.append(tempR)
+            if not mode:
+                return tRects
 
     # Update the display
     pygame.display.flip()

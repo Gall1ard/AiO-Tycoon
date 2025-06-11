@@ -3,8 +3,18 @@ import sys
 from enum import Enum
 #Object classes
 
+pygame.init()
+
 class Buttons:
-    def __init__(self, rect, color, hover_color, text, txtcol, txthov, font, alpha=0) -> None:
+    def __init__(self, 
+                 rect,
+                 color=(0,0,0),
+                 hover_color=(0,0,0),
+                 text="",
+                 txtcol=(0,0,0),
+                 txthov=(0,0,0),
+                 font=pygame.font.SysFont('Arial',0), 
+                 alpha=0) -> None:
         self.rect = pygame.Rect(rect)
         self.color = color
         self.hover_color = hover_color
@@ -61,6 +71,7 @@ class InputBox:
             self.active = not self.active if self.rect.collidepoint(event.pos) else False
             self.text = ""
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+            print("!")
 
         if event.type == pygame.KEYDOWN:
             if self.active:
