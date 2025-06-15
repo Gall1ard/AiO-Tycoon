@@ -68,10 +68,16 @@ class InputBox:
 
     def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            self.active = not self.active if self.rect.collidepoint(event.pos) else False
-            self.text = ""
+            bfr = self.text
+            if self.rect.collidepoint(event.pos):
+                self.active = not self.active 
+                self.text = ""
+            else:
+                self.active = False
+                self.text = bfr
+
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
-            print("!")
+            self.txt_surface = self.font.render(self.text, True, self.color)
 
         if event.type == pygame.KEYDOWN:
             if self.active:
@@ -134,91 +140,126 @@ class Quality(Enum):
 
 class Devices:
 
-    def __init__(self, model, quality, income):
+    def __init__(self, model, quality, income, price):
         self.model: str = model
         self.quality: Quality = quality
         self.income: int = income
+        self.price: int = price
     
     def count_influence(self) -> float:
         return self.income / (self.income * (6 - self.quality))
 
 class Monitor(Devices):
 
-    def __init__(self, model, quality, income, resolution, ratio):
-        super().__init__(model, quality, income)
+    def __init__(self, model, quality, income, price, resolution, ratio):
+        super().__init__(model, quality, income, price)
         self.resolution: str = resolution
         self.ratio: str = ratio
     
     def info(self):
         return {
             'model': self.model,
-            'quality': self.quality,
+            'quality': self.quality.name,
             'income': self.income,
+            'price': self.price,
             'resolution': self.resolution,
             'ratio': self.ratio
         }
 
 class Mouse(Devices):
 
-    def __init__(self, model, quality, income, dpi):
-        super().__init__(model, quality, income)
+    def __init__(self, model, quality, income, price, dpi):
+        super().__init__(model, quality, income, price)
         self.dpi: int = dpi
     
     def info(self):
         return {
             'model': self.model,
-            'quality': self.quality,
+            'quality': self.quality.name,
             'income': self.income,
+            'price': self.price,
             'dpi': self.dpi
         }
 
 class MousePad(Devices): #Extinction danger
 
-    def __init__(self, model, quality, income, softness):
-        super().__init__(model, quality, income)
+    def __init__(self, model, quality, income, price, softness):
+        super().__init__(model, quality, income, price)
         self.softness: str = softness
 
     def info(self):
         return {
             'model': self.model,
-            'quality': self.quality,
+            'quality': self.quality.name,
             'income': self.income,
+            'price': self.price,
             'softness': self.softness
         }
 
 class WebCamera(Devices):
     
-    def __init__(self, model, quality, income, resolution, hasMic):
-        super().__init__(model, quality, income)
+    def __init__(self, model, quality, income, price, resolution, hasMic):
+        super().__init__(model, quality, income, price)
         self.resolution: str = resolution
         self.hasMic: bool = hasMic
     
     def info(self):
         return {
             'model': self.model,
-            'quality': self.quality,
+            'quality': self.quality.name,
             'income': self.income,
+            'price': self.price,
             'resolution': self.resolution,
             'hasMic': self.hasMic
         }
 
 class Keyboard(Devices):
 
-    def __init__(self, model, quality, income, size):
-        super().__init__(model, quality, income)
+    def __init__(self, model, quality, income, price, size):
+        super().__init__(model, quality, income, price)
         self.size: str = size
     
     def info(self):
         return {
             'model': self.model,
-            'quality': self.quality,
+            'quality': self.quality.name,
             'income': self.income,
+            'price': self.price,
             'size': self.size
         }
 
 
+class Product:
 
+    def __init__(self, name: str, total_income: int, total_price: int, amount: int):
+        self.name = name
+        self.total_income = total_income
+        self.total_price = total_price
+        self.amount = amount
     
+    def info(self):
+        return {
+            "name": self.name,
+            "total income": self.total_income,
+            "total price": self.total_price,
+            "amount": self.amount
+        }
     
 
+class Employee:
 
+    def __init__(self, name: str, age: int, rating: float, experience: int):
+        self.name = name
+        self.age = age
+        self.rating = rating
+        self.experience = experience
+        self.is_hired = False
+    
+    def info(self):
+        return {
+            "Имя": self.name,
+            "Возраст": self.age,
+            "Рейтинг": self.rating,
+            "Стаж (лет)": self.experience,
+            "Статус": self.is_hired
+        }
