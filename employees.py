@@ -10,7 +10,8 @@ def get_candidates():
         staff.append(Employee(temp[0],
                             int(temp[1]),
                             float(temp[2]),
-                            int(temp[3][:-1])).info())
+                            int(temp[3]),
+                            int(temp[4][:-1])).info())
     return staff
     
 

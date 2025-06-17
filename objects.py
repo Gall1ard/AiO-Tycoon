@@ -248,12 +248,13 @@ class Product:
 
 class Employee:
 
-    def __init__(self, name: str, age: int, rating: float, experience: int):
+    def __init__(self, name: str, age: int, rating: float, experience: int, salary: int):
         self.name = name
         self.age = age
         self.rating = rating
         self.experience = experience
         self.is_hired = False
+        self.salary = salary
     
     def info(self):
         return {
@@ -261,5 +262,6 @@ class Employee:
             "Возраст": self.age,
             "Рейтинг": self.rating,
             "Стаж (лет)": self.experience,
-            "Статус": self.is_hired
+            "Статус": self.is_hired,
+            "Требуемая З/П": self.salary
         }

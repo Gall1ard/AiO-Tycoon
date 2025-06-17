@@ -45,7 +45,7 @@ backBtn = Buttons(rect=(20, 20, 100, 40),
                   font=mainfont,
                   alpha=0)
 
-editorBtn = Buttons(rect=(740, 150, 120, 40),
+editorBtn = Buttons(rect=(740, 200, 120, 40),
                     color=colours[0],
                     hover_color=colours[0],
                     text="Создать +",
@@ -99,7 +99,7 @@ finishBtn = Buttons(rect=(20, 680, 130, 30), #TODO: redo
                        font=smallmainfont,
                        alpha=255)
 
-upgradeBtn = Buttons(rect=(740, 200, 120, 40),
+branchesBtn = Buttons(rect=(740, 250, 120, 40),
                     color=colours[0],
                     hover_color=colours[0],
                     text="Филиалы",
@@ -108,10 +108,28 @@ upgradeBtn = Buttons(rect=(740, 200, 120, 40),
                     font=smallmainfont,
                     alpha=255)
 
-hireBtn = Buttons(rect=(740, 250, 120, 40),
+hireBtn = Buttons(rect=(740, 300, 120, 40),
                     color=colours[0],
                     hover_color=colours[0],
                     text="Нанять",
+                    txtcol=(255, 255, 255),
+                    txthov=(230, 230, 230),
+                    font=smallmainfont,
+                    alpha=255)
+
+upgradeBtn = Buttons(rect=(740, 350, 180, 40),
+                    color=colours[0],
+                    hover_color=colours[0],
+                    text="Улучшить офис",
+                    txtcol=(255, 255, 255),
+                    txthov=(230, 230, 230),
+                    font=smallmainfont,
+                    alpha=255)
+
+taxfraudBtn = Buttons(rect=(740, 400, 250, 40),
+                    color=colours[0],
+                    hover_color=colours[0],
+                    text="Уклонение от налогов",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
@@ -148,6 +166,15 @@ unfireBtn = Buttons(rect=(250, 380, 198, 20),
                     color=colours[3],
                     hover_color=colours[4],
                     text="Наймись",
+                    txtcol=(255, 255, 255),
+                    txthov=(230, 230, 230),
+                    font=smallmainfont,
+                    alpha=255)
+
+procUpgBtn = Buttons(rect=(451, 480, 198, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
+                    text="Купить",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
