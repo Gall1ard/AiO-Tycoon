@@ -139,7 +139,7 @@ mainfont2 = pygame.font.SysFont('Courier New', 30)
 smallmainfont = pygame.font.SysFont('Courier New', 20)
 tinyfont = pygame.font.SysFont('Courier New', 18)
 
-budget: float = 530000
+budget: float = 730000
 number_of_employees: int = len(staff) + 1
 
 
