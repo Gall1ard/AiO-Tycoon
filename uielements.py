@@ -45,9 +45,9 @@ backBtn = Buttons(rect=(20, 20, 100, 40),
                   font=mainfont,
                   alpha=0)
 
-editorBtn = Buttons(rect=(740, 200, 120, 40),
-                    color=colours[0],
-                    hover_color=colours[0],
+editorBtn = Buttons(rect=(740, 250, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
                     text="Создать +",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
@@ -99,37 +99,55 @@ finishBtn = Buttons(rect=(20, 680, 130, 30), #TODO: redo
                        font=smallmainfont,
                        alpha=255)
 
-branchesBtn = Buttons(rect=(740, 250, 120, 40),
-                    color=colours[0],
-                    hover_color=colours[0],
+branchesBtn = Buttons(rect=(740, 300, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
                     text="Филиалы",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
                     alpha=255)
 
-hireBtn = Buttons(rect=(740, 300, 120, 40),
-                    color=colours[0],
-                    hover_color=colours[0],
+hireBtn = Buttons(rect=(740, 350, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
                     text="Нанять",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
                     alpha=255)
 
-upgradeBtn = Buttons(rect=(740, 350, 180, 40),
-                    color=colours[0],
-                    hover_color=colours[0],
+upgradeBtn = Buttons(rect=(740, 400, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
                     text="Улучшить офис",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
                     alpha=255)
 
-taxfraudBtn = Buttons(rect=(740, 400, 250, 40),
-                    color=colours[0],
-                    hover_color=colours[0],
+taxfraudBtn = Buttons(rect=(740, 450, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
                     text="Уклонение от налогов",
+                    txtcol=(255, 255, 255),
+                    txthov=(230, 230, 230),
+                    font=smallmainfont,
+                    alpha=255)
+
+depositBtn = Buttons(rect=(740, 500, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
+                    text="Депнуть имущество",
+                    txtcol=(255, 255, 255),
+                    txthov=(230, 230, 230),
+                    font=smallmainfont,
+                    alpha=255)
+
+watchBtn = Buttons(rect=(740, 550, 332, 40),
+                    color=colours[3],
+                    hover_color=colours[4],
+                    text="Посмотреть продукцию",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
@@ -156,7 +174,7 @@ lRightBtn = Buttons(rect=(900, 119, 50, 476),
 fireBtn = Buttons(rect=(250, 380, 198, 20),
                     color=colours[3],
                     hover_color=colours[4],
-                    text="Уволься",
+                    text="Уволить",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
@@ -165,7 +183,7 @@ fireBtn = Buttons(rect=(250, 380, 198, 20),
 unfireBtn = Buttons(rect=(250, 380, 198, 20),
                     color=colours[3],
                     hover_color=colours[4],
-                    text="Наймись",
+                    text="Нанять",
                     txtcol=(255, 255, 255),
                     txthov=(230, 230, 230),
                     font=smallmainfont,
@@ -180,22 +198,23 @@ procUpgBtn = Buttons(rect=(451, 480, 198, 40),
                     font=smallmainfont,
                     alpha=255)
 
+
 nameInput = InputBox(
     rect=(340, 260, 400, 50),
     font=smallmainfont,
-    text="Имя (от 3-х до 20-и символов)"
+    text="Имя (от 3-х до 10-и букв)"
 )
 
 companyNameInput = InputBox(
     rect=(340, 260, 400, 50),
     font=smallmainfont,
-    text="Название фирмы"
+    text="Название фирмы (3-10 букв)"
 )
 
 productNameInput = InputBox(
-    rect=(200, 645, 400, 50),
+    rect=(180, 645, 520, 50),
     font=smallmainfont,
-    text="Название девайса"
+    text="Название девайса (Нажать Enter после ввода)"
 )
 
 def form_buttons(rects = []) -> list:

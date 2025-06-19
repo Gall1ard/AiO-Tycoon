@@ -65,13 +65,14 @@ class InputBox:
         self.active = False
         self.font = font
         self.nameVar = ""
+        self.buffer = text
 
     def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             bfr = self.text
             if self.rect.collidepoint(event.pos):
                 self.active = not self.active 
-                self.text = ""
+                if self.text == self.buffer: self.text = ""
             else:
                 self.active = False
                 self.text = bfr
@@ -82,13 +83,15 @@ class InputBox:
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
-                    if 3 <= len(self.text) <= 20:
+                    if 3 <= len(self.text) <= 10:
                         self.nameVar = self.text
                         pygame.event.post(pygame.event.Event(pygame.USEREVENT, button=self))
                     else:
-                        print("КАКОЙ ЖЕ ТЫ ДЕГЕНЕРАТ, СКАЗАНО ЖЕ, ЧТО ОТ 3-Х ДО 20-И")
-                        
-                    self.text = ''
+                        pygame.event.post(pygame.event.Event(pygame.USEREVENT + 4, button=self))
+                        #print("СКАЗАНО ЖЕ, ЧТО ОТ 3-Х ДО 10-И")
+                    
+                    self.active = False
+                    self.text = self.buffer
                 
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]

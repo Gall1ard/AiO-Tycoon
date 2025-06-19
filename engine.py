@@ -8,10 +8,8 @@ from random import randint
 from employees import get_candidates
 
 
-# Initialize PyGame
 pygame.init()
 
-# Set up the game window
 screen_width = 1080
 screen_height = 720
 gameicon = pygame.image.load("sources/icon.png")
@@ -20,12 +18,13 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_icon(gameicon)
 pygame.display.set_caption("AiO-Tycoon")
 
-GAME_SCENE = 2 #Start scene is 0. If it's not then it's for testing purposes
+GAME_SCENE = 0 #Start scene is 0. If it's not then it's for testing purposes
 '''
 0 - Main menu screen
 1 - Login/Register screen (pops up if the player wasn't logged in)
 2 - Main game scene
 3 - Device constructor scene
+-1 - คุณห่วยในการเล่นเกมนี้ ๕๕๕๕๕+
 '''
 
 cBg = 0
@@ -34,6 +33,7 @@ GAIN = pygame.USEREVENT + 1
 EXPENSE = pygame.USEREVENT + 2
 FINE = pygame.USEREVENT + 3
 
+INVALID_NAME = False
 EDITOR = False
 CNAME_TOGGLE = False
 CAN_SELECT = False
@@ -44,12 +44,17 @@ UPGRADE_OFFICE = False
 DEVELOP_BRANCHES = False
 HIRING_ERROR = False
 FRAUD_DETECTED = False
+BANKRUPCY = False
+WATCH_PRODUCTS = False
 
 player_name = ""
+company_name = ""
 income = 0
 staff =  []
 staff_limit = 1
 candidates = get_candidates()
+adjustment = 1
+branches = 0
 
 buffer = {
     0: 0,
@@ -74,9 +79,18 @@ office_params = {500000: 5,
 curr_price = 500000
 
 products = []
+curr_product = {
+    0: "-",
+    1: "-",
+    2: "-",
+    3: "-",
+    4: "-"
+}
+namm = ["Монитор", "Мышь", "Коврик", "Клавиатура", "Веб-камера"]
 
 staff_ind = 0
 tab_ind = 0
+prod_ind = 0
 currBtns = []
 info = {}
 
@@ -86,8 +100,8 @@ expenses = 0
 tabnames = ["monitors", "mice", "mousepads", "keyboards", "webcameras"]
 
 pygame.time.set_timer(GAIN, 10000)
-pygame.time.set_timer(EXPENSE, 30000)
 pygame.time.set_timer(FINE, randint(1000, 2000))
+pygame.time.set_timer(EXPENSE, 30000)
 
 startBg = pygame.image.load("sources/Bgs/startbg.png")
 blurBg = pygame.image.load("sources/Bgs/blurred.png")
@@ -100,14 +114,16 @@ editorBg = pygame.image.load("sources/Bgs/editorbg.png")
 miniUpg1 = [pygame.image.load("sources/Miniatures/gamescene1.png"),
             pygame.image.load("sources/Miniatures/mediumoffice1.png"),
             pygame.image.load("sources/Miniatures/sold.png"),]
-
+branch = pygame.image.load("sources/Miniatures/branch1.png")
 
 resumeIcon = pygame.image.load("sources/Sprites/resume.png")
+
 monitorDummy = pygame.image.load("sources/Sprites/monitordummy.png")
 mouseDummy = pygame.image.load("sources/Sprites/mousedummy.png")
 wcamDummy = pygame.image.load("sources/Sprites/webcameradummy.png")
 mousepadDummy = pygame.image.load("sources/Sprites/mousepaddummy.png")
 keyboardDummy = pygame.image.load("sources/Sprites/keyboarddummy.png")
+computerDummy = pygame.image.load("sources/Sprites/aiodummy.png")
 
 dummies = [monitorDummy, mouseDummy, mousepadDummy, keyboardDummy, wcamDummy]
 
@@ -123,14 +139,12 @@ mainfont2 = pygame.font.SysFont('Courier New', 30)
 smallmainfont = pygame.font.SysFont('Courier New', 20)
 tinyfont = pygame.font.SysFont('Courier New', 18)
 
-budget: float = 1_000_000_000.0
+budget: float = 530000
 number_of_employees: int = len(staff) + 1
 
 
 # Set the frame rate
 clock = pygame.time.Clock()
-
-
 
 # Main game loop
 while True:
@@ -143,14 +157,21 @@ while True:
         
         ui_.backBtn.is_clicked(event=event)
 
-        if event.type == pygame.USEREVENT and event.button == ui_.backBtn and GAME_SCENE >= 1:
-            if STAFF_MANAGING:
+        if event.type == pygame.USEREVENT and event.button == ui_.backBtn and GAME_SCENE != 0:
+            if GAME_SCENE == -1:
+                BANKRUPCY = True
+                GAME_SCENE = 0
+            elif STAFF_MANAGING:
                 STAFF_MANAGING = False
                 HIRING_ERROR = False
             elif UPGRADE_OFFICE:
                 UPGRADE_OFFICE = False
             elif DEVELOP_BRANCHES:
                 DEVELOP_BRANCHES = False
+            elif WATCH_PRODUCTS:
+                WATCH_PRODUCTS = False
+            elif player_name != "":
+                GAME_SCENE -= 2
             else:
                 GAME_SCENE -= 1
         
@@ -164,14 +185,83 @@ while True:
                 sys.exit()
             
             if event.type == pygame.USEREVENT and event.button == ui_.playBtn:
-                GAME_SCENE = 1
+                if BANKRUPCY:
+                    cBg = 0
+                    EDITOR = False
+                    CNAME_TOGGLE = False
+                    CAN_SELECT = False
+                    PNAME_TOGGLE = False
+                    INSUFFICIENT_EMPLOYEES = True
+                    STAFF_MANAGING = False
+                    UPGRADE_OFFICE = False
+                    DEVELOP_BRANCHES = False
+                    HIRING_ERROR = False
+                    FRAUD_DETECTED = False
+                    BANKRUPCY = False
+                    WATCH_PRODUCTS = False
+
+                    player_name = ""
+                    income = 0
+                    staff =  []
+                    staff_limit = 1
+                    candidates = get_candidates()
+                    adjustment = 1
+                    branches = 0
+
+                    buffer = {
+                        0: 0,
+                        1: 0,
+                        2: 0,
+                        3: 0,
+                        4: 0
+                    }
+
+                    pBuffer = {
+                        0: 0,
+                        1: 0,
+                        2: 0,
+                        3: 0,
+                        4: 0
+                    }
+
+                    office_params = {500000: 5,
+                                    1200000: 10,
+                                    2880000: 24}
+
+                    curr_price = 500000
+
+                    products = []
+                    curr_product = {
+                        0: "-",
+                        1: "-",
+                        2: "-",
+                        3: "-",
+                        4: "-"
+                    }
+
+                    staff_ind = 0
+                    tab_ind = 0
+                    currBtns = []
+                    info = {}
+
+                    rent = 30000
+                    expenses = 0
+
+                    budget: float = 1_000_000_000
+                    number_of_employees: int = len(staff) + 1
+
+                GAME_SCENE = 1 if player_name == "" else 2
         
         if GAME_SCENE == 1:
             ui_.nameInput.is_clicked(event=event)
 
             if event.type == pygame.USEREVENT and event.button == ui_.nameInput:
                 player_name = ui_.nameInput.nameVar
+                INVALID_NAME = False
                 GAME_SCENE = 2
+            
+            if event.type == pygame.USEREVENT + 4 and event.button == ui_.nameInput:
+                INVALID_NAME = True
 
         if GAME_SCENE == 2:
             ui_.companyNameInput.is_clicked(event=event)
@@ -182,6 +272,8 @@ while True:
                 ui_.upgradeBtn.is_clicked(event=event)
                 ui_.branchesBtn.is_clicked(event=event)
                 ui_.taxfraudBtn.is_clicked(event=event)
+                ui_.watchBtn.is_clicked(event=event)
+                ui_.depositBtn.is_clicked(event=event)
 
             if STAFF_MANAGING:
                 ui_.lLeftBtn.is_clicked(event=event)
@@ -193,9 +285,16 @@ while True:
                 else:
                     ui_.unfireBtn.is_clicked(event=event)
                 
-            elif UPGRADE_OFFICE and cBg < 2:
+            elif (UPGRADE_OFFICE and cBg < 2) or DEVELOP_BRANCHES:
                 ui_.procUpgBtn.is_clicked(event=event)
+            
+            elif WATCH_PRODUCTS:
+                ui_.lLeftBtn.is_clicked(event=event)
+                ui_.lRightBtn.is_clicked(event=event)
+            
 
+            if event.type == pygame.USEREVENT and event.button == ui_.depositBtn:
+                GAME_SCENE = -1
 
             if event.type == pygame.USEREVENT and event.button == ui_.companyNameInput and not CNAME_TOGGLE:
                 CNAME_TOGGLE = True
@@ -213,20 +312,36 @@ while True:
             if event.type == pygame.USEREVENT and event.button == ui_.upgradeBtn:
                 UPGRADE_OFFICE = True
             
-            if event.type == pygame.USEREVENT and event.button == ui_.lLeftBtn and staff_ind >= 1:
-                staff_ind -= 1
-                HIRING_ERROR = False
+            if event.type == pygame.USEREVENT and event.button == ui_.watchBtn:
+                WATCH_PRODUCTS = True
             
-            if event.type == pygame.USEREVENT and event.button == ui_.lRightBtn and staff_ind < len(candidates) - 1:
-                staff_ind += 1
-                HIRING_ERROR = False
+            if event.type == pygame.USEREVENT and event.button == ui_.lLeftBtn:
+                if STAFF_MANAGING and (not(WATCH_PRODUCTS))  and staff_ind >= 1:
+                    staff_ind -= 1
+                    HIRING_ERROR = False
+                elif not(STAFF_MANAGING) and WATCH_PRODUCTS and prod_ind >= 1:
+                    prod_ind -= 1
+            
+            if event.type == pygame.USEREVENT and event.button == ui_.lRightBtn:
+                if STAFF_MANAGING and (not(WATCH_PRODUCTS)) and staff_ind < len(candidates) - 1:
+                    staff_ind += 1
+                    HIRING_ERROR = False
+                elif not(STAFF_MANAGING) and WATCH_PRODUCTS and prod_ind < len(products)-1:
+                    prod_ind += 1
             
             if event.type == pygame.USEREVENT and event.button == ui_.procUpgBtn:
-                if budget >= curr_price:
-                    budget -= curr_price
-                    cBg = cBg + 1
-                    staff_limit = office_params[curr_price]
-                    curr_price = int(curr_price*2.4)
+                if UPGRADE_OFFICE:
+                    if budget >= curr_price and staff_limit == number_of_employees:
+                        budget -= curr_price
+                        cBg = cBg + 1
+                        staff_limit = office_params[curr_price]
+                        curr_price = int(curr_price*2.4)
+
+                elif DEVELOP_BRANCHES:
+                    if budget > 9000000 and branches <= 5:
+                        budget -= 9000000
+                        adjustment *= 1.75
+                        branches += 1
 
             if event.type == pygame.USEREVENT and event.button == ui_.taxfraudBtn:
                 FRAUD_DETECTED = True
@@ -235,15 +350,25 @@ while True:
 
             if event.type == FINE and FRAUD_DETECTED:
                 fine_ = randint(80000, budget-1000) if budget > 81000 else budget
-                budget -= fine_
-                t = randint(0, 1)
-                FRAUD_DETECTED = True if t else False
+                if budget - fine_ <= 0:
+                    GAME_SCENE = -1
+                else:
+                    budget -= fine_
+                    t = randint(0, 1)
+                    FRAUD_DETECTED = True if t else False
                 
             if event.type == GAIN and products != []:
-                budget += profit(products)
+                t = budget + profit(products)
+                if t <= 0:
+                    GAME_SCENE = -1
+                budget = t if t < 999999999999999 else 999999999999999
             
             if event.type == EXPENSE:
-                budget -= (expenses + rent)
+                if budget - (expenses + rent) <= 0:
+                    GAME_SCENE = -1
+                else:
+                    budget -= (expenses + rent)
+
             
             if event.type == pygame.USEREVENT and event.button == ui_.fireBtn:
                 HIRING_ERROR = False
@@ -314,6 +439,7 @@ while True:
                     if event.button == ui_.selectBtn and CAN_SELECT:
                         buffer[tab_ind] = info["income"]
                         pBuffer[tab_ind] = info["price"]
+                        curr_product[tab_ind] = info["model"]
                     
                     if event.button == ui_.finishBtn and all([i!=0 for i in buffer.values()]) != 0:
                         PNAME_TOGGLE = True
@@ -329,12 +455,30 @@ while True:
                                                         randint(10, 120)))
                                 EDITOR = False
                                 PNAME_TOGGLE = False
+                                for key_ in curr_product.keys(): curr_product[key_] = "-"
                                 GAME_SCENE = 2
+
 
             
 
 
     #Scene management
+
+    if GAME_SCENE == -1:
+        
+        screen.fill((169, 195, 196))
+        tint = pygame.Surface((1080, 720))
+        tint.set_alpha(200)
+        tint.fill((0, 0, 0))
+        screen.blit(tint, (0, 0))
+        
+        ui_.backBtn.draw(screen)
+
+        t1_font = mainfont2.render("Вы - банкрот:(", True, (255, 255, 255))
+        t1_rect = t1_font.get_rect(center=(screen_width//2, 370))
+        screen.blit(t1_font, t1_rect)
+
+
 
     if GAME_SCENE == 0:
         # Background, title and buttons
@@ -365,9 +509,10 @@ while True:
         t1_rect = t1_font.get_rect(center=(screen_width//2, 170))
         screen.blit(t1_font, t1_rect)
 
-        t2_font = mainfont2.render("Неверный псевдоним", True, (255, 244, 244))
-        t2_rect = t2_font.get_rect(center=(screen_width//2, 600))
-        screen.blit(t2_font, t2_rect)
+        if INVALID_NAME:
+            t2_font = mainfont2.render("Неверный псевдоним", True, (255, 244, 244))
+            t2_rect = t2_font.get_rect(center=(screen_width//2, 600))
+            screen.blit(t2_font, t2_rect)
 
         ui_.nameInput.draw(screen)
         ui_.backBtn.draw(screen)
@@ -393,7 +538,7 @@ while True:
             tint.fill((0, 0, 0))
             screen.blit(tint, (730, 0))
 
-            cName = smallmainfont.render(f"Фижма: {ui_.companyNameInput.nameVar}", True, (255, 244, 244))
+            cName = smallmainfont.render(f"Название: {ui_.companyNameInput.nameVar}", True, (255, 244, 244))
             cNameRect = cName.get_rect(topleft=(screen_width-340, 10))
             screen.blit(cName, cNameRect)
 
@@ -401,8 +546,8 @@ while True:
             cBudgetRect = cBudget.get_rect(topleft=(screen_width-340, 50))
             screen.blit(cBudget, cBudgetRect)
 
-            office = mainfont.render(f"Основной офис", True, (255, 244, 244))
-            officeRect = office.get_rect(center=(365, 25))
+            office = mainfont2.render(f"Основной офис", True, (255, 244, 244))
+            officeRect = office.get_rect(center=(365, 40))
             screen.blit(office, officeRect)
 
             cEmp = smallmainfont.render(f"Штат сотрудников: {number_of_employees}", True, (255, 244, 244))
@@ -417,13 +562,19 @@ while True:
             emLimitRect = emLimit.get_rect(topleft=(screen_width-340, 170))
             screen.blit(emLimit, emLimitRect)
 
+            brNum = smallmainfont.render(f"Филиалов: {branches} (доход +{int((adjustment-1)*100)}%)", True, (255, 244, 244))
+            brNumRect = brNum.get_rect(topleft=(screen_width-340, 210))
+            screen.blit(brNum, brNumRect)
+
             ui_.editorBtn.draw(screen)
             ui_.branchesBtn.draw(screen)
             ui_.hireBtn.draw(screen)
             ui_.upgradeBtn.draw(screen)
             ui_.taxfraudBtn.draw(screen)
+            ui_.depositBtn.draw(screen)
+            ui_.watchBtn.draw(screen)
 
-            if STAFF_MANAGING or DEVELOP_BRANCHES or UPGRADE_OFFICE:
+            if STAFF_MANAGING or DEVELOP_BRANCHES or UPGRADE_OFFICE or WATCH_PRODUCTS:
                 
                 tint = pygame.Surface((1080, 720))
                 tint.set_alpha(204)
@@ -462,7 +613,7 @@ while True:
                             ui_.unfireBtn.draw(screen)
                         
                         if HIRING_ERROR:
-                            cnd_info = mainfont2.render(f"Перебор", True, (255, 244, 244))
+                            cnd_info = mainfont2.render(f"Офисы переполнены", True, (255, 244, 244))
                             cnd_rect = cnd_info.get_rect(topleft=(250, 449))
                             screen.blit(cnd_info, cnd_rect)
 
@@ -476,6 +627,12 @@ while True:
 
                         price = smallmainfont.render(f"Вместимость: {office_params[curr_price]} сотрудников", True, (255, 244, 244))
                         price_rect = price.get_rect(center=(540, 420))
+                        screen.blit(price, price_rect)
+
+                        tt = f"Наймите ещё сотрудников ({staff_limit-number_of_employees}), чтобы прокачать офис" if staff_limit != number_of_employees else ""
+
+                        price = smallmainfont.render(tt, True, (255, 244, 244))
+                        price_rect = price.get_rect(center=(540, 550))
                         screen.blit(price, price_rect)
                     
                     else:
@@ -494,7 +651,44 @@ while True:
 
                 elif DEVELOP_BRANCHES:
 
-                    pass
+                    if cBg == 2:
+                        price = mainfont2.render(f"Цена: 90000000", True, (255, 244, 244))
+                        price_rect = price.get_rect(center=(540, 450))
+                        screen.blit(price, price_rect)
+
+                        price = smallmainfont.render(f"+75% к доходу", True, (255, 244, 244))
+                        price_rect = price.get_rect(center=(540, 420))
+                        screen.blit(price, price_rect)
+
+                        price = smallmainfont.render(f"Построено филиалов: {branches}/6", True, (255, 244, 244))
+                        price_rect = price.get_rect(center=(540, 550))
+                        screen.blit(price, price_rect)
+
+                        screen.blit(branch, (389, 100))
+                        ui_.procUpgBtn.draw(screen)
+
+                    else:
+                        log1 = smallmainfont.render("У вас должен быть лучший офис,", True, (255, 244, 244))
+                        log1_rect = log1.get_rect(center=(540, 360))
+                        screen.blit(log1, log1_rect)
+                        log1 = smallmainfont.render("прежде чем филиал будет построен", True, (255, 244, 244))
+                        log1_rect = log1.get_rect(center=(540, 390))
+                        screen.blit(log1, log1_rect)
+                
+                elif WATCH_PRODUCTS:
+                    ui_.lLeftBtn.draw(screen)
+                    ui_.lRightBtn.draw(screen)
+
+                    if len(products) != 0:
+                        screen.blit(computerDummy, (324, 100))
+                        price = smallmainfont.render(f"{products[prod_ind].info()['name']}", True, (255, 244, 244))
+                        price_rect = price.get_rect(center=(540, 550))
+                        screen.blit(price, price_rect)
+                    
+                    else:
+                        price = smallmainfont.render(f"Пусто", True, (255, 244, 244))
+                        price_rect = price.get_rect(center=(540, 550))
+                        screen.blit(price, price_rect)
 
 
         
@@ -534,6 +728,7 @@ while True:
                 tab = pygame.Surface((270, 30))
                 tab.fill(ui_.colours[3])
                 screen.blit(tab, (770, 30))
+                screen.blit(computerDummy, (140,100))
 
                 temp = ""
 
@@ -577,10 +772,16 @@ while True:
                         itmpr = itmp.get_rect(topleft=(750, 600+(18*c)))
                         screen.blit(itmp, itmpr)
                         c += 1
+                    
+                for key_, val_ in curr_product.items():
+                    itmp = smallmainfont.render(f"{namm[key_]}: {val_}", True, (255, 244, 244))
+                    itmpr = itmp.get_rect(topleft=(20, 400+(28*key_)))
+                    screen.blit(itmp, itmpr)
 
                 if PNAME_TOGGLE:
-                    
                     ui_.productNameInput.draw(screen)
+
+
         ui_.backBtn.draw(screen)
     
 
@@ -637,7 +838,7 @@ while True:
             decline -= randint(tmp["total price"] - randint(100, 400),
                                 tmp["total price"] + randint(1000, 1200)) * tmp["amount"]
                 
-        return decline
+        return decline + int(decline * (adjustment-1))
 
 
     # Update the display
