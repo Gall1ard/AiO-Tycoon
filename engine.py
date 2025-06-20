@@ -5,11 +5,10 @@ import uielements as ui_
 from objects import Product
 from random import randint
 from imgsinit import *
-from calcs import profit
+from calcs import profit, reset
 from displayeditor import unfold
 from canvas_handle import func
 import cfg
-
 
 pygame.init()
 
@@ -95,6 +94,7 @@ while True:
             
             if event.type == pygame.USEREVENT and event.button == ui_.playBtn:
                 if cfg.BANKRUPCY:
+                    reset()
                     pass
 
                 cfg.GAME_SCENE = 1 if cfg.player_name == "" else 2
