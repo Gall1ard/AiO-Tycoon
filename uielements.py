@@ -1,7 +1,7 @@
 #UI elements translocation for better management
 import pygame
 import sys
-from objects import Buttons, InputBox
+from objects import Buttons, InputBox, Slider
 
 pygame.init()
 
@@ -27,7 +27,16 @@ playBtn = Buttons(rect=(59, 260, 124, 50),
                   font=mainfont,
                   alpha=0)
 
-quitBtn = Buttons(rect=(59, 365, 124, 50),
+muteBtn = Buttons(rect=(59, 365, 124, 50),
+                  color=colours[2],
+                  hover_color=colours[2],
+                  text="Mute",
+                  txtcol=(200, 200, 200),
+                  txthov=(230, 230, 230),
+                  font=mainfont,
+                  alpha=0)
+
+quitBtn = Buttons(rect=(59, 470, 124, 50),
                   color=colours[2],
                   hover_color=colours[2],
                   text="Quit",
@@ -216,6 +225,9 @@ productNameInput = InputBox(
     font=smallmainfont,
     text="Название девайса (Нажать Enter после ввода)"
 )
+
+volume_slider = Slider(50, 650, 200, 10, 10, colours[0], colours[1])
+
 
 def form_buttons(rects = []) -> list:
     return [Buttons(rect=rct_) for rct_ in rects]

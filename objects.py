@@ -109,6 +109,28 @@ class InputBox:
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+(self.rect.h//4)))
 
 
+class Slider:
+    def __init__(self, slider_x, slider_y, width, height, knob_rad, colour1, colour2):
+        self.slider_x = slider_x
+        self.slider_y = slider_y
+        self.width = width
+        self.height = height
+        self.volume = 0.25
+        self.knob_rad = knob_rad
+        self.knob_x = slider_x + int(self.volume * self.width)
+        self.col1 = colour1
+        self.col2 = colour2
+    
+    def drag(self,):
+        mouse_x = pygame.mouse.get_pos()[0]
+        self.knob_x = max(self.slider_x, min(mouse_x, self.slider_x + self.width))
+        self.volume = (self.knob_x - self.slider_x) / self.width
+        return self.volume
+    
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.col1, (self.slider_x, self.slider_y - self.height // 2, self.width, self.height))
+        pygame.draw.circle(screen, self.col2, (self.knob_x, self.slider_y), self.knob_rad)
+
 class JobTitle:
     
     def __init__(self, minimum_wage, title):
